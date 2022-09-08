@@ -48,9 +48,10 @@ def apply_function_portal_h5ads(
             continue
 
         logger.info(f"Applying function on {dev_uri}")
+        explorer_url = data_info[dev_uri]["explorer_url"]
         adata = ad.read("temp.h5ad", "r")
 
-        results[dev_uri] = fun(adata)
+        results[explorer_url] = fun(adata)
 
         os.remove("temp.h5ad")
         if counter > 5:

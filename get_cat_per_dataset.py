@@ -12,8 +12,7 @@ def main():
     )
 
     final_results = {
-        "s3_uri": [],
-        "explorer_url": [],
+        "exp_url": [],
         "n_col_one_category": [],
         "n_col_two_or_more_category": [],
         "largest_category_n": [],
@@ -22,25 +21,22 @@ def main():
 
     n_cat_per_column = []
 
-    for s3_uri in results:
+    for exp_url in results:
 
-        final_results["s3_uri"].append(s3_uri)
-        final_results["explorer_url"].append(
-            results[s3_uri]["explorer_url"]
-        )
+        final_results["exp_url"].append(exp_url)
         final_results["n_col_one_category"].append(
-            results[s3_uri]["n_col_one_category"]
+            results[exp_url]["n_col_one_category"]
         )
         final_results["n_col_two_or_more_category"].append(
-            results[s3_uri]["n_col_two_or_more_category"]
+            results[exp_url]["n_col_two_or_more_category"]
         )
         final_results["largest_category_n"].append(
-            results[s3_uri]["largest_category_n"]
+            results[exp_url]["largest_category_n"]
         )
         final_results["largest_category_label"].append(
-            results[s3_uri]["largest_category_label"]
+            results[exp_url]["largest_category_label"]
         )
-        n_cat_per_column.extend(results[s3_uri]["n_categories_per_column"])
+        n_cat_per_column.extend(results[exp_url]["n_categories_per_column"])
 
     n_cat_per_column = Counter(n_cat_per_column)
     n_cat_per_column = pd.DataFrame(n_cat_per_column.most_common())
