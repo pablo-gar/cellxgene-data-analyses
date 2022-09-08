@@ -1,0 +1,7 @@
+s3_uri	n_col_one_category	n_col_two_or_more_category	largest_category_n	largest_category_label
+s3://corpora-data-dev/db37ad13-c177-4e46-a879-d06a7bc2ddbd/local.h5ad	2	8	6	tissue
+s3://corpora-data-dev/886ab040-482c-47ab-af47-0deea2ac195b/local.h5ad	2	8	6	tissue
+s3://corpora-data-dev/80ea3a0e-f224-467b-ba37-5baf83313c0e/local.h5ad	2	8	6	tissue
+s3://corpora-data-dev/93295eab-bcea-4f7d-93cb-880f8eabc9e6/local.h5ad	2	8	6	tissue
+s3://corpora-data-dev/88fca839-a85b-4880-bf03-26cad167d699/local.h5ad	2	8	6	tissue
+s3://corpora-data-dev/22d1a324-4da1-47c5-b406-29e115822f8a/local.h5ad	7	4	43	adult_pred_type
