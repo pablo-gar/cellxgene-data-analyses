@@ -13,6 +13,7 @@ def main():
 
     final_results = {
         "s3_uri": [],
+        "explorer_url": [],
         "n_col_one_category": [],
         "n_col_two_or_more_category": [],
         "largest_category_n": [],
@@ -24,6 +25,9 @@ def main():
     for s3_uri in results:
 
         final_results["s3_uri"].append(s3_uri)
+        final_results["explorer_url"].append(
+            results[s3_uri]["explorer_url"]
+        )
         final_results["n_col_one_category"].append(
             results[s3_uri]["n_col_one_category"]
         )
