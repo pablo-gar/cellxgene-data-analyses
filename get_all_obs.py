@@ -12,7 +12,13 @@ def main():
         cellxgene_data_table_file, make_all_obs
     )
 
-    big_obs = pd.concat(list(results.values()))
+    for key, values in results.items():
+        results[key]["explorer_url"] = key
+
+    big_obs = pd.concat(list(results.values()), ignore_index=True)
+
+
+    big_obs.to_csv("./results/all_obs.tsv", sep="\t")
 
 
 def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
@@ -28,6 +34,8 @@ def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
 
             if n_categories > max_categories:
                 columns_to_drop.append(column)
+        else:
+            columns_to_drop.append(column)
 
     adata.obs = adata.obs.drop(columns=columns_to_drop)
 

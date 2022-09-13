@@ -54,8 +54,8 @@ def apply_function_portal_h5ads(
         results[explorer_url] = fun(adata)
 
         os.remove("temp.h5ad")
-        if counter > 5:
-            break
+        #if counter > 15:
+        #    break
         counter += 1
 
     return results
