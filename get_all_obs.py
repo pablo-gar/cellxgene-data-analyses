@@ -6,7 +6,7 @@ import cellxgene_apply
 
 def main():
 
-    cellxgene_data_table_file = "./data_tables/cellxgene_all_data_latest.tsv"
+    cellxgene_data_table_file = "./data_tables/cellxgene_all_data_prod_09142022.json"
 
     results = cellxgene_apply.apply_function_portal_h5ads(
         cellxgene_data_table_file, make_all_obs
@@ -17,8 +17,7 @@ def main():
 
     big_obs = pd.concat(list(results.values()), ignore_index=True)
 
-
-    big_obs.to_csv("./results/all_obs.tsv", sep="\t")
+    big_obs.to_csv("./results/all_obs.tsv", sep="\t", compression="gzip")
 
 
 def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):

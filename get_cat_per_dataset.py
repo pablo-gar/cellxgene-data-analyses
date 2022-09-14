@@ -6,7 +6,7 @@ import cellxgene_apply
 
 def main():
 
-    cellxgene_data_table_file = "./data_tables/cellxgene_all_data_latest.tsv"
+    cellxgene_data_table_file = "./data_tables/cellxgene_all_data_prod_09142022.json"
     results = cellxgene_apply.apply_function_portal_h5ads(
         cellxgene_data_table_file, count_categories_h5ad
     )

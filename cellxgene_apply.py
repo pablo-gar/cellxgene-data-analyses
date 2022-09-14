@@ -4,6 +4,7 @@ import anndata as ad
 import os
 import logging
 from typing import Dict
+import json
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ S3 = boto3.resource("s3")
 
 
 def apply_function_portal_h5ads(
-    data_table_file: str, fun: callable, sep: str = "\t"
+    data_json_file: str, fun: callable, sep: str = "\t"
 ) -> Dict:
     """
      Applies a function to all h5ads from CZ CELLxGENE Discover as defined
@@ -31,38 +32,38 @@ def apply_function_portal_h5ads(
      items are the corresponding return of `fun`
     """
 
-    data_info = get_all_data_info(data_table_file)
+    data_info = get_all_data_info_from_json(data_json_file)
 
     results = {}
     counter = 1
     total = len(data_info)
 
-    for dev_uri in data_info:
+    for uri in data_info:
 
         logger.info(f"Working on data {counter} of {total}")
 
         try:
-            download_from_s3(dev_uri, "temp.h5ad")
+            download_from_s3(uri, "temp.h5ad")
         except:
-            logger.warning(f"Could not find {dev_uri}")
+            logger.warning(f"Could not find {uri}")
             continue
 
-        logger.info(f"Applying function on {dev_uri}")
-        explorer_url = data_info[dev_uri]["explorer_url"]
+        logger.info(f"Applying function on {uri}")
+        explorer_url = data_info[uri]["explorer_url"]
         adata = ad.read("temp.h5ad", "r")
 
         results[explorer_url] = fun(adata)
 
         os.remove("temp.h5ad")
-        #if counter > 15:
-        #    break
+        if counter > 15:
+            break
         counter += 1
 
     return results
 
 
-def get_all_data_info(
-    data_table_file: str, sep: str = "\t"
+def get_all_data_info_from_json(
+        data_json_file: str, sep: str = "\t"
 ) -> Dict[str, Dict]:
     """
     Parses information of tabular file containing CZ CELLxGENE Discover,
@@ -82,44 +83,27 @@ def get_all_data_info(
         - "tissues": List[str]
         - "assays": List[str]
     """
-
-    def converter_fun(x): return x.strip("[]").replace("'", "").split(", ")
-
-    all_data = pd.read_csv(
-        data_table_file,
-        sep=sep,
-        index_col=0,
-        converters={
-            "S3 URIs": converter_fun,
-            "Organisms": converter_fun,
-            "Tissues": converter_fun,
-            "Assays": converter_fun,
-        },
-    )
+    json_file_obj = open(data_json_file, "r")
+    all_data = json.load(json_file_obj)
+    json_file_obj.close()
 
     data_dict = {}
 
-    for row in all_data.iterrows():
+    for current_dict in all_data.values():
 
-        row = row[1]
+        dataset_uri = ""
+        for uri in current_dict["s3_uris"]:
+            if "h5ad" in uri:
+                dataset_uri = uri
 
-        for dataset_uri in row["S3 URIs"]:
-
-            if "h5ad" not in dataset_uri:
-                continue
-
-            data_dict[dataset_uri] = {
-                "dataset_uri_prod": dataset_uri.replace(
-                    "corpora-data-dev", "corpora-data-prod"
-                ),
-                "explorer_url": row["Explorer URL"],
-                "collection_id": row["ID"],
-                "collection_name": row["Name"],
-                "cell_count": row["Cell Count"],
-                "organisms": row["Organisms"],
-                "tissues": row["Tissues"],
-                "assays": row["Assays"],
-            }
+        data_dict[dataset_uri] = {
+            "dataset_uri_prod": dataset_uri,
+            "explorer_url": current_dict["explorer_url"],
+            "cell_count": current_dict["cell_count"],
+            "organisms": current_dict["organisms"],
+            "tissues": current_dict["tissue"],
+            "assays": current_dict["assay"],
+        }
 
     return data_dict
 
