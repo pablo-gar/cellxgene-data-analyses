@@ -50,13 +50,22 @@ def apply_function_portal_h5ads(
 
         logger.info(f"Applying function on {uri}")
         explorer_url = data_info[uri]["explorer_url"]
-        adata = ad.read("temp.h5ad", "r")
 
-        results[explorer_url] = fun(adata)
+        try:
+            adata = ad.read("temp.h5ad", "r")
+        except:
+            logger.warning(f"Could not find read {explorer_url}")
+            continue
+
+        try:
+            results[explorer_url] = fun(adata)
+        except:
+            logger.warning(f"Could not apply function to {explorer_url}")
+            continue
 
         os.remove("temp.h5ad")
-        if counter > 15:
-            break
+        #if counter > 15:
+        #    break
         counter += 1
 
     return results
