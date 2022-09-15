@@ -17,7 +17,7 @@ def main():
 
     big_obs = pd.concat(list(results.values()), ignore_index=True)
 
-    big_obs.to_csv("./results/all_obs.tsv", sep="\t", compression="gzip")
+    big_obs.to_csv("./results/all_obs.tsv.gz", sep="\t", compression="gzip")
 
 
 def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):

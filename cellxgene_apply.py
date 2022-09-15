@@ -6,7 +6,10 @@ import logging
 from typing import Dict
 import json
 
-logging.basicConfig()
+logging.basicConfig(filename="log",
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 S3 = boto3.resource("s3")
