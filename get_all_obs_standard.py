@@ -17,23 +17,38 @@ def main():
 
     big_obs = pd.concat(list(results.values()), ignore_index=True)
 
-    big_obs.to_csv("./results/all_obs.tsv.gz", sep="\t", compression="gzip")
+    big_obs.to_csv("./results/all_obs_standard.tsv.gz", sep="\t", compression="gzip")
 
 
 def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
+
+    columns = [
+        "assay_ontology_term_id",
+        "cell_type_ontology_term_id",
+        "development_stage_ontology_term_id",
+        "donor_id",
+        "is_primary_data",
+        "organism_ontology_term_id",
+        "self_reported_ethnicity_ontology_term_id",
+        "ethnicity_ontology_term_id",
+        "sex_ontology_term_id",
+        "suspension_type",
+        "assay",
+        "cell_type",
+        "development_stage",
+        "disease",
+        "organism",
+        "self_reported_ethnicity",
+        "ethnicity",
+        "sex",
+        "tissue",
+    ]
 
     # Remove columns with high number of items
     columns_to_drop = []
     for column in adata.obs.columns:
 
-        if isinstance(adata.obs[column].dtype, pd.api.types.CategoricalDtype):
-
-            categories = adata.obs[column].cat.categories
-            n_categories = len(categories)
-
-            if n_categories > max_categories:
-                columns_to_drop.append(column)
-        else:
+        if not column in columns:
             columns_to_drop.append(column)
 
     adata.obs = adata.obs.drop(columns=columns_to_drop)
