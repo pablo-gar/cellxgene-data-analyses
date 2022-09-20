@@ -24,6 +24,7 @@ def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
 
     columns = [
         "assay_ontology_term_id",
+        "tissue_ontology_term_id",
         "cell_type_ontology_term_id",
         "development_stage_ontology_term_id",
         "donor_id",
@@ -48,12 +49,13 @@ def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
     columns_to_drop = []
     for column in adata.obs.columns:
 
-        if not column in columns:
+        if column not in columns:
             columns_to_drop.append(column)
 
-    adata.obs = adata.obs.drop(columns=columns_to_drop)
+    obs = adata.obs.drop(columns=columns_to_drop)
+    obs = obs.groupby(obs.columns.tolist(), as_index=False, dropna=False).size()
 
-    return adata.obs.drop_duplicates().reset_index()
+    return obs
 
 
 if __name__ == "__main__":

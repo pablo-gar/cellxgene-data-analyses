@@ -1,5 +1,4 @@
 import boto3
-import pandas as pd
 import anndata as ad
 import os
 import logging
