@@ -54,6 +54,7 @@ def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
 
     obs = adata.obs.drop(columns=columns_to_drop)
     obs = obs.groupby(obs.columns.tolist(), as_index=False, dropna=False).size()
+    obs = obs[obs["size"]>0]
 
     return obs
 
