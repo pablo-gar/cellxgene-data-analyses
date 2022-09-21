@@ -53,10 +53,29 @@ def make_all_obs(adata: ad.AnnData, max_categories: int = 1000):
             columns_to_drop.append(column)
 
     obs = adata.obs.drop(columns=columns_to_drop)
-    obs = obs.groupby(obs.columns.tolist(), as_index=False, dropna=False).size()
-    obs = obs[obs["size"]>0]
-
+    obs = count_unique_row_pandas(obs)
     return obs
+
+
+def count_unique_row_pandas(df: pd.DataFrame):
+
+    df_result = df.iloc[0:1, :].copy()
+    df_result["count"] = 0
+
+    for i in range(len(df)):
+        row = df.iloc[i:i+1, :]
+        which = (df_result.drop(columns=["count"]) == row.to_numpy()).all(1)
+        if which.any():
+            df_result.loc[which, "count"] += 1
+        else:
+            new_row = row.copy()
+            new_row["count"] = 1
+            df_result = pd.concat([df_result, new_row])
+
+    return df_result
+
+
+
 
 
 if __name__ == "__main__":
